@@ -21,18 +21,22 @@ jobs:
           ZIP_FILE=$(find . -maxdepth 2 -type f -iname "*.zip" | head -n 1)
 
           if [ -z "$ZIP_FILE" ]; then
-            echo "ERROR: No ZIP file found"
+            echo "ERROR: No ZIP file found in repository"
             exit 1
           fi
 
+          echo "Extracting: $ZIP_FILE"
+
           mkdir -p /tmp/spice-data
           unzip -o "$ZIP_FILE" -d /tmp/spice-data
+
           cp -an /tmp/spice-data/. .
 
       - name: Commit extracted files
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
           git add -A
 
           if ! git diff --cached --quiet; then
